@@ -4,6 +4,7 @@
 
 #include "sockpp/tcp_acceptor.h"
 #include "cbor.h"
+#include "osm_api.h"
 
 using namespace std;
 
@@ -20,6 +21,8 @@ void handler(sockpp::tcp_socket sock) {
         decode_getmap_query((uint8_t*)buf, res.value(), &query);
 
         print_getmap_query(&query);
+
+        fetch_bounding_box(&query);
 
         sock.write_n(buf, res.value());
     }
