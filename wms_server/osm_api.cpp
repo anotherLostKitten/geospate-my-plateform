@@ -15,7 +15,7 @@ using namespace std;
 
 mutex osm_tmp_file_mutex;
 
-void fetch_map_for_bounding_box(const struct bbox* query) {
+GDALDatasetH fetch_map_for_bounding_box(const struct bbox* query) {
     string bbox = std::format("{},{},{},{}", query->minx, query->miny, query->maxx, query->maxy);
     cpr::Response r = cpr::Get(cpr::Url{OSM_API_URL}, cpr::Parameters{{"bbox", bbox}});
 
@@ -24,13 +24,14 @@ void fetch_map_for_bounding_box(const struct bbox* query) {
 
     if (r.status_code == 200) {
         lock_guard<mutex> guard(osm_tmp_file_mutex);
-        ofstream outfile;
+        ofstream outfile; // TODO ? it would be nicer if we could use virtual memeory here instead of creating a temp file but that would require more effort
         outfile.open(TMP_OSM_FILE, ios::trunc);
         outfile << r.text;
         outfile.close();
 
-        load_osm_to_geojson(TMP_OSM_FILE, get_bbox_filename(query));
+        return load_osm_to_geojson(TMP_OSM_FILE, get_bbox_filename(query));
     }
+    return NULL;
 }
 
 void fetch_bounding_box_for_city(string city_name, struct bbox* query) {

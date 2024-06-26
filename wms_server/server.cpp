@@ -40,6 +40,8 @@ int main() {
         exit(1);
     }
 
+    GDALAllRegister();
+
     cout << "waiting for connection on " << port << endl;
 
     while (1) {
