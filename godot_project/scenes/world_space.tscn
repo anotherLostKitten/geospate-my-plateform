@@ -1,9 +1,21 @@
-[gd_scene load_steps=4 format=3 uid="uid://c3q23qfi81quv"]
+[gd_scene load_steps=7 format=3 uid="uid://c3q23qfi81quv"]
 
 [ext_resource type="Script" path="res://scripts/mesh_creation.gd" id="1_f3oog"]
 [ext_resource type="Script" path="res://scripts/Camera.gd" id="1_jcald"]
+[ext_resource type="Texture2D" uid="uid://v8qgm7jomqph" path="res://textures/grass.png" id="3_mn146"]
 
 [sub_resource type="ImmediateMesh" id="ImmediateMesh_h27sf"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ipymw"]
+albedo_color = Color(0.458824, 0.458824, 0.458824, 1)
+albedo_texture = ExtResource("3_mn146")
+backlight_enabled = true
+backlight = Color(0.909804, 0.909804, 0.909804, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_t1eh0"]
+material = SubResource("StandardMaterial3D_ipymw")
+uv2_padding = 1.2
+size = Vector2(2000, 2000)
 
 [node name="WorldSpace" type="Node3D"]
 
@@ -15,3 +27,9 @@ sensitivity = 0.12
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("ImmediateMesh_h27sf")
 script = ExtResource("1_f3oog")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_t1eh0")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.22325, 0.974761, 0, -0.974761, 0.22325, 0, 0.34061, 0)
