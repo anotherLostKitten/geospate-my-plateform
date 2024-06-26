@@ -10,17 +10,14 @@ config_version=5
 
 [application]
 
-config/name="Geospate my Plateform"
-run/main_scene="res://node_3d.tscn"
+config/name="Geo Json Godot"
+run/main_scene="res://scenes/world_space.tscn"
 config/features=PackedStringArray("4.2", "Mobile")
+config/icon="res://icon.svg"
 
 [autoload]
 
-Geodot="*res://addons/geodot/geodot.gd"
-
-[editor_plugins]
-
-enabled=PackedStringArray("res://addons/geodot/plugin.cfg")
+Controller="*res://scripts/controller.gd"
 
 [rendering]
 
