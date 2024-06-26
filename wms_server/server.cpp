@@ -10,7 +10,7 @@ using namespace std;
 
 void handler(sockpp::tcp_socket sock) {
     char buf[512];
-    struct getmap_query query;
+    struct bbox query;
     sockpp::result<size_t> res;
 
     while (1) {
@@ -20,9 +20,9 @@ void handler(sockpp::tcp_socket sock) {
         // cout << "recieved: " << buf << endl;
         decode_getmap_query((uint8_t*)buf, res.value(), &query);
 
-        print_getmap_query(&query);
+        print_bbox(&query);
 
-        fetch_bounding_box(&query);
+        fetch_map_for_bounding_box(&query);
 
         sock.write_n(buf, res.value());
     }

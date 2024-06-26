@@ -9,7 +9,7 @@
         }                                       \
     } while(0)                                  \
 
-size_t decode_getmap_query(const uint8_t* buf, size_t size, struct getmap_query* query) {
+size_t decode_getmap_query(const uint8_t* buf, size_t size, struct bbox* query) {
     CborParser par;
     CborValue val, outVal;
     cbor_parser_init(buf, size, 0, &par, &outVal);
@@ -25,7 +25,7 @@ size_t decode_getmap_query(const uint8_t* buf, size_t size, struct getmap_query*
     return size;
 }
 
-size_t encode_getmap_query(uint8_t* buf, size_t size, const struct getmap_query* query) {
+size_t encode_getmap_query(uint8_t* buf, size_t size, const struct bbox* query) {
     CborEncoder enc, arrEnc;
     cbor_encoder_init(&enc, buf, size, 0);
     CHECK_ERR(cbor_encoder_create_array(&enc, &arrEnc, 4));

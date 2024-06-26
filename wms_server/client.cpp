@@ -23,7 +23,7 @@ int main() {
     if (!conn.read_timeout(TIMEOUT))
         exit(1);
 
-    struct getmap_query query = {.minx = 11.54, .miny = 48.14, .maxx = 11.543, .maxy = 48.145};
+    struct bbox query = {.minx = 11.54, .miny = 48.14, .maxx = 11.543, .maxy = 48.145};
     char buf[512];
 
     while (1) {

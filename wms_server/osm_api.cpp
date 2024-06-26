@@ -14,7 +14,7 @@ using namespace std;
 
 mutex osm_tmp_file_mutex;
 
-void fetch_bounding_box(const struct getmap_query* query) {
+void fetch_map_for_bounding_box(const struct bbox* query) {
     string bbox = std::format("{},{},{},{}", query->minx, query->miny, query->maxx, query->maxy);
     cpr::Response r = cpr::Get(cpr::Url{OSM_API_URL}, cpr::Parameters{{"bbox", bbox}});
 
