@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <string>
 
 struct getmap_query {
     float minx;
@@ -10,3 +11,5 @@ struct getmap_query {
 };
 
 void print_getmap_query(const struct getmap_query* query);
+
+std::string get_bbox_filename(const struct getmap_query* query);

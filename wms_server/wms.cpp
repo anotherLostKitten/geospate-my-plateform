@@ -1,4 +1,5 @@
 #include <iostream>
+#include <format>
 
 #include "wms.h"
 
@@ -9,4 +10,8 @@ void print_getmap_query(const struct getmap_query* query) {
          << "\n\tminy: " << query->miny
          << "\n\tmaxx: " << query->maxx
          << "\n\tmaxy: " << query->maxy << endl;
+}
+
+string get_bbox_filename(const struct getmap_query* query) {
+    return format("map_bbox_{}_{}_{}_{}.geojson", query->minx, query->miny, query->maxx, query->maxy);
 }

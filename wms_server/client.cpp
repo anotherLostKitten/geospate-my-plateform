@@ -40,6 +40,8 @@ int main() {
             exit(1);
 
         cout << "recieved: " << buf << endl;
+
+        return 0;
     }
 
     return 0;

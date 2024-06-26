@@ -1,8 +1,8 @@
 CC = clang++ -std=c++20
 
-LINKER_FLAGS = -lsockpp -ltinycbor -lcpr
+LINKER_FLAGS = -lsockpp -ltinycbor -lcpr -lgdal
 
-SERVER_DEPS = server.o cbor.o wms.o osm_api.o
+SERVER_DEPS = server.o cbor.o wms.o osm_api.o gdal.o
 
 CLIENT_DEPS = client.o cbor.o wms.o
 
