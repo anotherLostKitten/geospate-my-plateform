@@ -9,6 +9,7 @@
 
 #define OSM_API_URL "https://api.openstreetmap.org/api/0.6/map"
 #define TMP_OSM_FILE "tmp.osm"
+#define OVERPASS_API_URL "https://overpass-api.de/api/interpreter"
 
 using namespace std;
 
@@ -30,4 +31,8 @@ void fetch_map_for_bounding_box(const struct bbox* query) {
 
         load_osm_to_geojson(TMP_OSM_FILE, get_bbox_filename(query));
     }
+}
+
+void fetch_bounding_box_for_city(string city_name, struct bbox* query) {
+    return; // TODO ?
 }

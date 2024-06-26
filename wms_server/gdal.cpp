@@ -10,8 +10,12 @@ using namespace std;
 
 void load_osm_to_geojson(string osm_file_loc, string out_file_loc) {
     int err;
+    GDALAllRegister();
 
-    GDALDatasetH dat = GDALOpenEx(osm_file_loc.c_str(), 0, NULL, NULL, NULL);
+    GDALDriverH driver = GDALGetDriverByName("OSM");
+    cout << GDALGetDescription(driver) << endl;
+
+    GDALDatasetH dat = GDALOpenEx(osm_file_loc.c_str(), GDAL_OF_VECTOR, NULL, NULL, NULL);
     if (dat == NULL) {
         cerr << "could not open tmp osm file " << osm_file_loc << endl;
         return;
