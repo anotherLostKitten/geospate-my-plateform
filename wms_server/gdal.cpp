@@ -8,7 +8,7 @@
 
 using namespace std;
 
-GDALDatasetH load_osm_to_geojson(string osm_file_loc, string out_file_loc) {
+GDALDatasetH load_osm_to_gdal(string osm_file_loc, string out_file_loc) {
     int err;
 
     // GDALDriverH driver = GDALGetDriverByName("OSM");
@@ -24,4 +24,15 @@ GDALDatasetH load_osm_to_geojson(string osm_file_loc, string out_file_loc) {
     // if (err != 0) {
     //     cerr << "could not write geojson file with error " << err << endl;
     // }
+}
+
+void write_gdal_to_geojson(GDALDatasetH dat) {
+    size_t layers = GDALDatasetGetLayerCount(dat);
+
+    for (int i = 0; i < layers; i++) {
+        OGRLayerH layer = GDALDatasetGetLayer(dat, i);
+        const char* opts_txt[2] = {OGR_L_GetName(layer), NULL};
+        GDALVectorTranslateOptions* opts =
+            GDALVectorTranslateOptionsNew((char**)opts_txt, NULL);
+    }
 }
