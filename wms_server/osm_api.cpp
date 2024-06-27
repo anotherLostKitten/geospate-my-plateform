@@ -29,7 +29,14 @@ GDALDatasetH fetch_map_for_bounding_box(const struct bbox* query) {
         outfile << r.text;
         outfile.close();
 
-        return load_osm_to_gdal(TMP_OSM_FILE, get_bbox_filename(query));
+        GDALDatasetH dat = load_osm_to_gdal(TMP_OSM_FILE);
+        if (!dat) return NULL;
+
+        if (write_gdal_to_geojson(dat, get_bbox_filename(query))) {
+            GDALClose(dat);
+            return NULL;
+        }
+        return dat;
     }
     return NULL;
 }

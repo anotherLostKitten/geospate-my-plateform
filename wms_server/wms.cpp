@@ -18,7 +18,7 @@ void print_bbox(const struct bbox* query) {
 }
 
 string get_bbox_filename(const struct bbox* query) {
-    return format("map_bbox_{}_{}_{}_{}.geojson", query->minx, query->miny, query->maxx, query->maxy);
+    return format("map_bbox_{}_{}_{}_{}", query->minx, query->miny, query->maxx, query->maxy);
 }
 
 size_t create_normalized_bbox(const struct bbox* outer, unique_ptr<struct bbox[]>* arr) {

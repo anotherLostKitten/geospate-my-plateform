@@ -1,14 +1,16 @@
 #include <string>
 #include <iostream>
+#include <format>
 
 #include <gdal.h>
 #include <gdal_utils.h>
 
 #include "osm_api.h"
+#include "constants.h"
 
 using namespace std;
 
-GDALDatasetH load_osm_to_gdal(string osm_file_loc, string out_file_loc) {
+GDALDatasetH load_osm_to_gdal(string osm_file_loc) {
     int err;
 
     // GDALDriverH driver = GDALGetDriverByName("OSM");
@@ -26,7 +28,7 @@ GDALDatasetH load_osm_to_gdal(string osm_file_loc, string out_file_loc) {
     // }
 }
 
-void write_gdal_to_geojson(GDALDatasetH dat) {
+int write_gdal_to_geojson(GDALDatasetH dat, string out_file_loc) {
     size_t layers = GDALDatasetGetLayerCount(dat);
 
     for (int i = 0; i < layers; i++) {
@@ -34,5 +36,12 @@ void write_gdal_to_geojson(GDALDatasetH dat) {
         const char* opts_txt[2] = {OGR_L_GetName(layer), NULL};
         GDALVectorTranslateOptions* opts =
             GDALVectorTranslateOptionsNew((char**)opts_txt, NULL);
+        string out_file = format(GEOJSON_PATH "{}_{}.geojson", OGR_L_GetName(layer), out_file_loc);
+        int err = 0;
+        GDALDatasetH out_dat = GDALVectorTranslate(out_file.c_str(), NULL, 1, &dat, opts, &err);
+        GDALVectorTranslateOptionsFree(opts);
+        if (err) return err;
+        if (out_dat) GDALClose(out_dat);
     }
+    return 0;
 }
