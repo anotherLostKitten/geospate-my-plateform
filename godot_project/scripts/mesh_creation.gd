@@ -12,14 +12,14 @@ func _ready():
 		#Tops of the polygons are bugged.
 		if shape.get("geometry").get("type") == "Polygon":
 			Controller.render_polygon(shape, mesh, Mesh.PRIMITIVE_TRIANGLE_STRIP)
-		
+		elif shape.get("geometry").get("type") == "MultiPolygon":
+			Controller.render_multipolygon(shape, mesh, Mesh.PRIMITIVE_TRIANGLE_STRIP)
 		#Fully working.
 		elif shape.get("geometry").get("type") == "LineString":
 			Controller.render_line(shape, mesh, Mesh.PRIMITIVE_LINE_STRIP)
 		#Fully working.
 		elif shape.get("geometry").get("type") == "MultiLineString":
 			Controller.render_multiline(shape, mesh, Mesh.PRIMITIVE_LINE_STRIP)
-		
 		elif shape.get("geometry").get("type") == "Point":
 			Controller.render_point(shape, mesh, Mesh.PRIMITIVE_TRIANGLES)
 		else:
