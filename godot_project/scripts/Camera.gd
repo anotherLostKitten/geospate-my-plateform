@@ -15,7 +15,7 @@ var _direction = Vector3(0.0, 0.0, 0.0)
 var _velocity = Vector3(0.0, 0.0, 0.0)
 var _acceleration = 30
 var _deceleration = -10
-var _vel_multiplier = 40
+var _vel_multiplier = 10
 
 # Keyboard state
 var _w = false
@@ -107,3 +107,11 @@ func _update_mouselook():
 	
 		rotate_y(deg_to_rad(-yaw))
 		rotate_object_local(Vector3(1,0,0), deg_to_rad(-pitch))
+
+
+func _on_mesh_instance_3d_spawn_camera():
+	Controller.calculate_camera_speed()
+	print(Controller.bias_speed)
+	_vel_multiplier*=Controller.bias_speed
+	if Controller.SCALE_SPAWN_TO_LOCATION:
+		global_transform.origin = Vector3((Controller.bias_x)/Controller.bias_amount, 4.0*Controller.bias_speed, (Controller.bias_z)/Controller.bias_amount)
