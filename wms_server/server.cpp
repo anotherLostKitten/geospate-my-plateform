@@ -5,6 +5,7 @@
 #include "sockpp/tcp_acceptor.h"
 #include "cbor.h"
 #include "osm_api.h"
+#include "chunk_manager.h"
 
 using namespace std;
 
@@ -22,7 +23,7 @@ void handler(sockpp::tcp_socket sock) {
 
         print_bbox(&query);
 
-        fetch_map_for_bounding_box(&query);
+        load_bbox(&query);
 
         sock.write_n(buf, res.value());
     }
