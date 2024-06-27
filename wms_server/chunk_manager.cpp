@@ -24,6 +24,12 @@ void load_bbox(const struct bbox* outer_bbox) {
     unique_ptr<struct bbox[]> bboxes;
     size_t nbb = create_normalized_bbox(outer_bbox, &bboxes);
     for (int i = 0; i < nbb; i++) {
-
+        vector<string> fs = check_bbox_local_file(&bboxes[i]);
+        if (fs.empty()) {
+            cout << "bbox not found for " << get_bbox_filename(&bboxes[i]) << endl;
+            GDALDatasetH dat = fetch_map_for_bounding_box(&bboxes[i]);
+            if (dat)
+                GDALClose(dat);
+        }
     }
 }

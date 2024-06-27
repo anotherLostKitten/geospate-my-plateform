@@ -24,8 +24,8 @@ string get_bbox_filename(const struct bbox* query) {
 size_t create_normalized_bbox(const struct bbox* outer, unique_ptr<struct bbox[]>* arr) {
     float minx = floor(outer->minx * BBOX_PER_DEG) / BBOX_PER_DEG;
     float miny = floor(outer->miny * BBOX_PER_DEG) / BBOX_PER_DEG;
-    float maxx = floor(outer->maxx * BBOX_PER_DEG) / BBOX_PER_DEG;
-    float maxy = floor(outer->maxy * BBOX_PER_DEG) / BBOX_PER_DEG;
+    float maxx = ceil(outer->maxx * BBOX_PER_DEG) / BBOX_PER_DEG;
+    float maxy = ceil(outer->maxy * BBOX_PER_DEG) / BBOX_PER_DEG;
 
     size_t bboxes_x = (size_t)round(abs(maxx-minx) * BBOX_PER_DEG),
         bboxes_y = (size_t)round(abs(maxy-miny) * BBOX_PER_DEG);
