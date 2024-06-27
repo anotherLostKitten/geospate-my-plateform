@@ -1,6 +1,6 @@
 extends Node
 
-var FILE_TO_LOAD = "res://geo_json/multipolygons.geojson"
+var FILE_TO_LOAD = "res://geo_json/points.geojson"
 var GEOMETRY_SCALE = 100
 var SCALE_SPAWN_TO_LOCATION = true
 var SCALE_SPEED_TO_LOCATION = true
@@ -14,10 +14,14 @@ var bias_amount = 0
 var geometry_dictionary = null
 	
 func geojson_load(file_location):
-	var file = FileAccess.open(file_location, FileAccess.READ)
-	var content = file.get_as_text()
-	file.close()
-	return content
+	if FileAccess.file_exists("file_location"):
+		var file = FileAccess.open(file_location, FileAccess.READ)
+		var content = file.get_as_text()
+		file.close()
+		return content
+	else:
+		print("File doesn't exist.")
+		return null
 
 func geojson_parse(geojson_string):
 	#create new json reader
@@ -30,24 +34,40 @@ func render_polygon(polygon, mesh, render_mode):
 	
 	mesh.surface_begin(render_mode)
 	for i in polygon.get("geometry").get("coordinates")[0]:
+		i[1] = -1*i[1]
 		mesh.surface_add_vertex(Vector3(i[0]*GEOMETRY_SCALE, 1, i[1]*GEOMETRY_SCALE))
 		mesh.surface_add_vertex(Vector3(i[0]*GEOMETRY_SCALE, 0, i[1]*GEOMETRY_SCALE))
 		if SCALE_SPAWN_TO_LOCATION: calculate_spawn(i[0],i[1])
 		if SCALE_SPEED_TO_LOCATION: calculate_map_bounds(i[0],i[1])
 	#var temp_geometry = triangulate_polygon(polygon.get("geometry").get("coordinates")[0])
 	mesh.surface_end()
+	
 	mesh.surface_begin(render_mode)
 	for i in polygon.get("geometry").get("coordinates")[0]:
+		i[1] = -1*i[1]
+		mesh.surface_add_vertex(Vector3(i[0]*GEOMETRY_SCALE, 0, i[1]*GEOMETRY_SCALE))
 		mesh.surface_add_vertex(Vector3(i[0]*GEOMETRY_SCALE, 1, i[1]*GEOMETRY_SCALE))
 		if SCALE_SPAWN_TO_LOCATION: calculate_spawn(i[0],i[1])
 		if SCALE_SPEED_TO_LOCATION: calculate_map_bounds(i[0],i[1])
 	mesh.surface_end()
+	
+	
+	mesh.surface_begin(render_mode)
+	polygon.get("geometry").get("coordinates")[0].reverse()
+	for i in polygon.get("geometry").get("coordinates")[0]:
+		i[1] = -1*i[1]
+		mesh.surface_add_vertex(Vector3(i[0]*GEOMETRY_SCALE, 1, i[1]*GEOMETRY_SCALE))
+		if SCALE_SPAWN_TO_LOCATION: calculate_spawn(i[0],i[1])
+		if SCALE_SPEED_TO_LOCATION: calculate_map_bounds(i[0],i[1])
+	mesh.surface_end()
+	
 
 func render_multipolygon(polygon, mesh, render_mode):
 	for i in polygon.get("geometry").get("coordinates")[0]:
 		mesh.surface_begin(render_mode)
 		
 		for j in i:
+			j[1] = -1*j[1]
 			mesh.surface_add_vertex(Vector3(j[0]*GEOMETRY_SCALE, 0, j[1]*GEOMETRY_SCALE))
 			mesh.surface_add_vertex(Vector3(j[0]*GEOMETRY_SCALE, 1, j[1]*GEOMETRY_SCALE))
 			if SCALE_SPAWN_TO_LOCATION: calculate_spawn(j[0],j[1])
@@ -56,6 +76,7 @@ func render_multipolygon(polygon, mesh, render_mode):
 		
 		mesh.surface_begin(render_mode)
 		for j in i:
+			j[1] = -1*j[1]
 			mesh.surface_add_vertex(Vector3(j[0]*GEOMETRY_SCALE, 1, j[1]*GEOMETRY_SCALE))
 			mesh.surface_add_vertex(Vector3(j[0]*GEOMETRY_SCALE, 0, j[1]*GEOMETRY_SCALE))
 			if SCALE_SPAWN_TO_LOCATION: calculate_spawn(j[0],j[1])
@@ -65,6 +86,7 @@ func render_multipolygon(polygon, mesh, render_mode):
 	for i in polygon.get("geometry").get("coordinates")[0]:
 		mesh.surface_begin(render_mode)
 		for j in i:
+			j[1] = -1*j[1]
 			mesh.surface_add_vertex(Vector3(j[0]*GEOMETRY_SCALE, 1, j[1]*GEOMETRY_SCALE))
 			if SCALE_SPAWN_TO_LOCATION: calculate_spawn(j[0],j[1])
 			if SCALE_SPEED_TO_LOCATION: calculate_map_bounds(j[0],j[1])
@@ -73,6 +95,7 @@ func render_multipolygon(polygon, mesh, render_mode):
 func render_line(line, mesh, render_mode):
 	mesh.surface_begin(render_mode)
 	for i in line.get("geometry").get("coordinates"):
+		i[1] = -1*i[1]
 		mesh.surface_add_vertex(Vector3(i[0]*GEOMETRY_SCALE, 0, i[1]*GEOMETRY_SCALE))
 		if SCALE_SPAWN_TO_LOCATION: calculate_spawn(i[0],i[1])
 		if SCALE_SPEED_TO_LOCATION: calculate_map_bounds(i[0],i[1])
@@ -82,6 +105,7 @@ func render_multiline(line, mesh, render_mode):
 	for i in line.get("geometry").get("coordinates"):
 		mesh.surface_begin(render_mode)
 		for j in i:
+			j[1] = -1*j[1]
 			mesh.surface_add_vertex(Vector3(j[0]*GEOMETRY_SCALE, 0, j[1]*GEOMETRY_SCALE))
 			if SCALE_SPAWN_TO_LOCATION: calculate_spawn(j[0],j[1])
 			if SCALE_SPEED_TO_LOCATION: calculate_map_bounds(j[0],j[1])
@@ -89,6 +113,15 @@ func render_multiline(line, mesh, render_mode):
 	
 func render_point(point, mesh, render_mode):
 	mesh.surface_begin(render_mode)
+	point=point.get("geometry").get("coordinates")
+	print(point)
+	point[1] = -1*point[1]
+	#makes triangle at point
+	mesh.surface_add_vertex(Vector3(point[0]*GEOMETRY_SCALE, 0, point[1]*GEOMETRY_SCALE+bias_max.distance_to(bias_min)*GEOMETRY_SCALE*0.01))
+	mesh.surface_add_vertex(Vector3(point[0]*GEOMETRY_SCALE-bias_max.distance_to(bias_min)*GEOMETRY_SCALE*0.01, 0, point[1]*GEOMETRY_SCALE))
+	mesh.surface_add_vertex(Vector3(point[0]*GEOMETRY_SCALE+bias_max.distance_to(bias_min)*GEOMETRY_SCALE*0.01, 0, point[1]*GEOMETRY_SCALE))
+	if SCALE_SPAWN_TO_LOCATION: calculate_spawn(point[0],point[1])
+	if SCALE_SPEED_TO_LOCATION: calculate_map_bounds(point[0],point[1])
 	mesh.surface_end()
 
 func calculate_spawn(x_val, z_val):
@@ -110,4 +143,5 @@ func calculate_map_bounds(x_val, y_val):
  
 func calculate_camera_speed():
 	bias_speed*=bias_max.distance_to(bias_min)
+
 
