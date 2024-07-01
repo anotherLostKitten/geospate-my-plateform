@@ -18,7 +18,11 @@ void print_bbox(const struct bbox* query) {
 }
 
 string get_bbox_filename(const struct bbox* query) {
-    return format("map_bbox_{}_{}_{}_{}", query->minx, query->miny, query->maxx, query->maxy);
+    return format("map_bbox_{}_{}_{}_{}",
+                  round(query->minx * BBOX_PER_DEG),
+                  round(query->miny * BBOX_PER_DEG),
+                  round(query->maxx * BBOX_PER_DEG),
+                  round(query->maxy * BBOX_PER_DEG));
 }
 
 size_t create_normalized_bbox(const struct bbox* outer, unique_ptr<struct bbox[]>* arr) {

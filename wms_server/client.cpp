@@ -29,7 +29,7 @@ int main() {
     while (1) {
         sockpp::result<size_t> res;
 
-        // cin >> query.minx >> query.miny >> query.maxx >> query.maxy;
+        cin >> query.minx >> query.miny >> query.maxx >> query.maxy;
         size_t len = encode_getmap_query((uint8_t*)buf, sizeof(buf), &query);
 
         if (conn.write_n(buf, len) != len)
