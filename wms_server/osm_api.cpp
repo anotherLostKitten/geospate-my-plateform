@@ -14,7 +14,7 @@ using namespace std;
 
 mutex osm_tmp_file_mutex;
 
-GDALDatasetH fetch_map_for_bounding_box(const struct bbox* query) {
+int fetch_map_for_bounding_box(const struct bbox* query) {
     string bbox = std::format("{},{},{},{}", query->minx, query->miny, query->maxx, query->maxy);
 #ifndef DO_NOT_QUERY_WEB
     cpr::Response r = cpr::Get(cpr::Url{OSM_API_URL}, cpr::Parameters{{"bbox", bbox}});
@@ -23,7 +23,7 @@ GDALDatasetH fetch_map_for_bounding_box(const struct bbox* query) {
          << endl;
 
     if (r.status_code != 200)
-        return NULL;
+        return r.status_code;
 #endif
     lock_guard<mutex> guard(osm_tmp_file_mutex);
 #ifndef DO_NOT_QUERY_WEB
@@ -33,15 +33,7 @@ GDALDatasetH fetch_map_for_bounding_box(const struct bbox* query) {
     outfile.close();
 #endif
 
-    GDALDatasetH dat = load_osm_to_gdal(TMP_OSM_FILE);
-    if (!dat)
-        return NULL;
-
-    if (write_gdal_to_geojson(dat, get_bbox_filename(query))) {
-        GDALClose(dat);
-        return NULL;
-    }
-    return dat;
+    return write_osm_to_geojson(TMP_OSM_FILE, get_bbox_filename(query));
 }
 
 void fetch_bounding_box_for_city(string city_name, struct bbox* query) {

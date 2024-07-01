@@ -28,7 +28,11 @@ GDALDatasetH load_osm_to_gdal(string osm_file_loc) {
     // }
 }
 
-int write_gdal_to_geojson(GDALDatasetH dat, string out_file_loc) {
+int write_osm_to_geojson(string osm_file_name, string out_file_loc) {
+    GDALDatasetH dat = load_osm_to_gdal(osm_file_name);
+    if (!dat)
+        return -1;
+
     size_t layers = GDALDatasetGetLayerCount(dat);
 
     for (int i = 0; i < layers; i++) {
@@ -42,6 +46,13 @@ int write_gdal_to_geojson(GDALDatasetH dat, string out_file_loc) {
         GDALVectorTranslateOptionsFree(opts);
         if (err) return err;
         if (out_dat) GDALClose(out_dat);
+
+        GDALClose(dat);
+        if (i < layers - 1) {
+            dat = load_osm_to_gdal(osm_file_name);
+            if (!dat)
+                return -1;
+        }
     }
     return 0;
 }
