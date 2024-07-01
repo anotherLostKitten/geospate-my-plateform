@@ -1,7 +1,11 @@
 #include <iostream>
 #include <tinycbor/cbor.h>
+#include <nlohmann/json.hpp>
 
 #include "cbor.h"
+
+using namespace std;
+using json = nlohmann::json;
 
 #define CHECK_ERR(...) do {                     \
         if ((__VA_ARGS__) != CborNoError) {     \
@@ -36,4 +40,8 @@ size_t encode_getmap_query(uint8_t* buf, size_t size, const struct bbox* query) 
     CHECK_ERR(cbor_encoder_close_container(&enc, &arrEnc));
 
     return cbor_encoder_get_buffer_size(&enc, buf);
+}
+
+vector<uint8_t> encode_chunk_json_data(json data) {
+    return json::to_cbor(data);
 }

@@ -5,8 +5,7 @@
 #include <stdint.h>
 
 #include "wms.h"
-
-#define BBOX_PER_DEG ((float)100)
+#include "constants.h"
 
 using namespace std;
 

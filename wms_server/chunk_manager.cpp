@@ -1,12 +1,15 @@
 #include <iostream>
 #include <string>
 #include <filesystem>
+#include <fstream>
 #include <vector>
+#include <nlohmann/json.hpp>
 
 #include "wms.h"
 #include "osm_api.h"
 #include "constants.h"
 
+using json = nlohmann::json;
 using namespace std;
 
 vector<string> check_bbox_local_file(const struct bbox* bbox) {
@@ -32,4 +35,17 @@ void load_bbox(const struct bbox* outer_bbox) {
                 GDALClose(dat);
         }
     }
+}
+
+json get_chunk_json(const struct bbox* bbox) {
+    vector<string> fns = check_bbox_local_file(bbox);
+    if (fns.empty())
+        return NULL;
+
+    json data = json::array();
+    for (const string fn : fns) {
+        std::ifstream f(fn);
+        data.emplace_back(json::parse(f));
+    }
+    return data;
 }
